@@ -82,24 +82,14 @@ WSGI_APPLICATION = 'Factura.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-if DEBUG:
-    DATABASES = {
-        'default': {
-            dj_database_url.config(
-            default='sqlite3:///db.sqlite3',        
-            conn_max_age=600    
-            )
-        }
+DATABASES = {
+    'default': {
+        dj_database_url.config(
+        default='sqlite3:///db.sqlite3',        
+        conn_max_age=600    
+        )
     }
-else:
-    DATABASES = {
-        'default': {
-            dj_database_url.config(
-            default='postgresql://facturacion_owner:u8pebgFBVMc3@ep-super-mountain-a5un2n35.us-east-2.aws.neon.tech/facturacion?sslmode=require',        
-            conn_max_age=600    
-            )
-        }
-    }
+}
 
 
 # Password validation
@@ -138,7 +128,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-if not DEBUG:    
+if not DEBUG:    # Tell Django to copy static assets into a path called `staticfiles` (this is specific to Render)
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
     # Enable the WhiteNoise storage backend, which compresses static files to reduce disk use
     # and renames the files with unique names for each version to support long-term caching
