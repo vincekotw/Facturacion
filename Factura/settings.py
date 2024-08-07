@@ -85,7 +85,7 @@ WSGI_APPLICATION = 'Factura.wsgi.application'
 DATABASES = {
     'default': {
         dj_database_url.config(
-        default='sqlite3:///db.sqlite3',        
+        default='postgresql://facturacion_owner:u8pebgFBVMc3@ep-super-mountain-a5un2n35.us-east-2.aws.neon.tech/facturacion?sslmode=require',        
         conn_max_age=600    
         )
     }
