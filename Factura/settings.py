@@ -83,12 +83,10 @@ WSGI_APPLICATION = 'Factura.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        dj_database_url.config(
-        default='postgresql://facturacion_owner:u8pebgFBVMc3@ep-super-mountain-a5un2n35.us-east-2.aws.neon.tech/facturacion?sslmode=require',        
-        conn_max_age=600    
-        )
-    }
+    'default': dj_database_url.config(
+        default='postgresql://facturacion_owner:u8pebgFBVMc3@ep-super-mountain-a5un2n35.us-east-2.aws.neon.tech/facturacion?sslmode=require',
+        conn_max_age=600
+    )
 }
 
 
