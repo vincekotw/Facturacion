@@ -1,0 +1,49 @@
+{% extends 'Base/base.html' %}
+{% load static %}
+{% block content %}
+<div class="d-grid gap-4 col-9 mx-auto">
+    <form id="eliminar-form" action="{% url 'modcliente' cliente.numero_wsp %}" method="post" style="display:inline;">
+        {% csrf_token %}
+        <div>
+        <input type="hidden" name="eliminar" value="true">
+        <button type="button" class="btn btn-danger mt-2 me-2 float-end" onclick="confirmarEliminacion()"><b><img src="{% static 'E262_color.png' %}" alt="25" height="25"></b>Eliminar</button></form>
+    <form id="aclualizar-form"action="{% url 'modcliente' cliente.numero_wsp %}"  method="post" style="display:inline;">
+    {% csrf_token %}
+        <a class="btn btn-close btn-lg" data-bs-toggle="button" href="{% url 'clientes' %}"></a>
+        <input type="hidden" name="actualizar" value="true">
+        <button class="btn btn-outline-warning mt-2 me-2 float-end" type="submit" onclick="confirmarActualizacion()"><b><img src="{% static '1F504.svg' %}" alt="20" height="20" ></b> Actualizar</button>
+        
+        
+        </div>
+        
+    
+    <br>
+    <br>
+    
+    <table class="table">
+        <tr><td>
+            <b>Nombre:</b>
+        </td><td>
+            <b>📱Numero de WSP:</b>
+        </td></tr>
+        <tr><td>
+            {{modificar.nombre}}
+        </td><td>
+            {{modificar.numero_wsp}}
+        </td></tr>
+    </table>
+</form>
+</div>
+<script>
+    function confirmarEliminacion() {
+        if (confirm("¿Estás seguro de que deseas eliminar este cliente? Esta acción no se puede deshacer.")) {
+            document.getElementById('eliminar-form').submit();
+        }
+    }
+    function confirmarActualizacion() {
+        if (confirm("¿Estás seguro de que deseas modificar este cliente?")) {
+            document.getElementById('actualizar-form').submit();
+        }
+    }
+    </script>
+{% endblock %}

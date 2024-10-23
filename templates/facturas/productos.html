@@ -1,0 +1,108 @@
+{% extends 'Base/base.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block content %}
+<div class="col">
+<div class="mt-3">
+    <h2>Lista de Productos <a href="{% url 'facturas' %}" class="btn btn-outline-success me-2 rounded-pill float-end" type="button"><b>+</b> Añadir Factura</a></h2>
+</div>
+    <div class="d-flex justify-content-md-end me-2">
+        <form class="form-inline" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="form_name" value="form4">
+            <div class="input-group col-1 rounded-pill">  <!-- Ampliar el ancho del input -->
+                <input type="date" name="fecha" class="form-control rounded-pill rounded-end " value="{{ fecha_seleccionada|date:'Y-m-d' }}">
+                <button type="submit" class="btn btn-outline-dark rounded-pill rounded-start">Filtrar</button>
+            </div>
+        </form>
+    
+  <form class="form" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="form_name" value="form1">
+        <button>
+          <svg width="17" height="16" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="search">
+              <path d="M7.667 12.667A5.333 5.333 0 107.667 2a5.333 5.333 0 000 10.667zM14.334 14l-2.9-2.9" stroke="currentColor" stroke-width="1.333" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+        </button>
+        <input class="input" placeholder="Buscar" required="" type="text" name="buscar">
+        <button class="reset" type="reset">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+      </button>
+  </form>
+  <form method="post" class="form-inline">
+    {% csrf_token %}
+    <input type="hidden" name="form_name" value="form3">
+    <div class="input-group col-1 rounded-pill">
+    <select name="estado" class="form-select rounded-pill rounded-end">
+        <option value="por encargar" {% if estado_actual == "por encargar" %}selected{% endif %}>Por encargar</option>
+        <option value="encargado" {% if estado_actual == "encargado" %}selected{% endif %}>Encargado</option>
+        <option value="recibido" {% if estado_actual == "recibido" %}selected{% endif %}>Recibido</option>
+        <option value="entregado" {% if estado_actual == "entregado" %}selected{% endif %}>Entregado</option>
+        <option value="" {% if estado_actual == "" %}selected{% endif %}>Todos</option>
+    </select>
+    <button type="submit" class="btn btn-outline-dark rounded-pill rounded-start">Filtrar</button>
+</div>
+
+</form>  
+</div> 
+
+
+
+<div>
+    {% for fecha in fechas %}
+        {% if productos_por_fecha|get_item:fecha %}
+        <div class="d-flex justify-content-between mt-4">  
+        <div class="h2 me-4">{{ fecha }}</div> <div class="progress mt-2 me-4 col-4 aling-items-end" role="progressbar" aria-label="Progress bar" aria-valuenow="{{ progreso|get_item:fecha|floatformat:0 }}" aria-valuemin="0" aria-valuemax="100" style="height: 25px;">
+                <div class="progress-bar progress-bar-striped progress-bar-animated {% if progreso|get_item:fecha|floatformat:0 < '75' %}bg-success{% elif progreso|get_item:fecha|floatformat:0 < '90' %}bg-warning{% else %}bg-danger{% endif %}" style="width: {{ progreso|get_item:fecha|floatformat:0 }}%">
+                    <b>{{ dias|get_item:fecha }} días</b>
+                </div>
+            </div>
+        </div>  
+            <table class="table">
+                <tr>
+                    <th scope="col" class="col-2">Contacto:</th>
+                    <th scope="col" colspan="3" class="col-6">Productos:</th>
+                    <th scope="col" class="col-1">Total:</th>
+                    <th scope="col" class="col-2">Tipo de Pago:</th>
+                    <th scope="col" colspan="5">Estado:</th>
+                </tr>
+                <tbody>
+                    {% for product in productos_por_fecha|get_item:fecha %}
+                        <tr>
+                            <td class="col-2">
+                                {% if product.factura.nombre != "Cliente" %}
+                                    <a class="btn btn-outline-success" href="http://wa.me/53{{ product.factura.numero_wsp }}">📱 {{ product.factura.nombre }}</a>
+                                {% else %}
+                                    <a class="btn btn-outline-success" href="http://wa.me/53{{ product.factura.numero_wsp }}">📱 {{ product.factura.numero_wsp }}</a>
+                                {% endif %}
+                            </td>
+                            <td class="col-1">{{ product.cantidad }}</td>
+                            <td class="col-2">{{ product.nombre_producto }}</td>
+                            <td class="col-3"><a href="{{ product.enlace_temu }}">{{ product.enlace_temu }}</a></td>
+                            <td class="col-1">${{ product.total }}</td>
+                            <td class="col-2">{{ product.tipo_pago }}</td>
+                            <form method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="form_name" value="form2">
+                                <input type="hidden" name="id" value="{{ product.pk }}" readonly>
+                                <input type="hidden" name="estado_actual" value="{{ estado_actual }}">
+                                <td>{% if product.encargado %}Encargado:<img src="{% static '2705.svg' %}" alt="30" height="30">{% else %}Encargado: {{ estado.encargado }}{% endif %}</td>
+                                <td>{% if product.recibido %}Recibido:<img src="{% static '2705.svg' %}" alt="30" height="30">{% else %}Recibido: {{ estado.recibido }}{% endif %}</td>
+                                <td>{% if product.entregado %}Entregado:<img src="{% static '2705.svg' %}" alt="30" height="30">{% else %}Entregado: {{ estado.entregado }}{% endif %}</td>
+                                <td><input class="btn btn-success btn-sm" type="submit" value="Actualizar"></td>
+                            </form>
+                            <td>
+                                <a class="btn btn-success btn-sm" href="{% url 'modificar' product.pk %}">Modificar</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    {% endfor %}
+</div>
+</div>
+{% endblock %}

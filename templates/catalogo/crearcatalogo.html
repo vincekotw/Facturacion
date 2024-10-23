@@ -1,0 +1,125 @@
+{% extends 'Base/base.html' %}
+{% load static %}
+{% block content %}
+<div class="col">
+    <div>
+    <h1>
+        Añadir nuevo producto
+        <a href="{% url 'home' %}" class="btn btn-warning mt-2 me-2 float-end">Salir</a>
+    </h1>
+</div>
+    <div class="row">
+    <div class="justify-content-start col-lg-8 border-end">
+        <form method="post">
+            {% csrf_token %}
+            <div>
+                <button class="btn btn-outline-danger mt-2 rounded-pill float-start" type="reset" id="btn-reset">Limpiar Campos</button>
+                <Button class="btn btn-outline-success mt-2 rounded-pill float-end" type="submit" id="btn-preview">
+        Preview
+        </Button></div>
+        <div>
+        <table class="table">
+            <tr>
+                <th class="col-3">
+                    Nombre del Producto:
+                </th>
+                <td class="col" colspan="5">
+                    <input class="form-control" type="text" name="nombre_producto" maxlength="200" required id="id_nombre_producto" placeholder="Nombre del Producto">
+                </td>
+            </tr>
+            <tr>
+                <th class="col-3">
+                    Imagen del Producto:
+                </th>
+                <td class="col" colspan="5">
+                    <input class="form-control" type="text" name="imagen_producto" maxlength="500" required id="id_imagen_producto" placeholder="Url de la Imagen del Producto">
+                </td>
+            </tr>
+            <tr>
+                <th class="col-3">
+                    Precio del Producto:
+                </th>
+                <td class="col">
+                    <input class="form-control" type="number" name="precio" value="0" step="0.01" required id="id_precio">
+                </td>
+                <th class="col">
+                    Moneda de Pago:
+                </th>
+                <td class="col">
+                    <input class="form-control" type="text" name="moneda_producto" maxlength="10" required id="id_moneda_producto" placeholder="Moneda de Pago del Producto">
+                </td>
+                <th class="col">
+                    Tamaño del Producto:
+                </th>
+                <td class="col">
+                    <div class="input-group mb-3">
+                    <input class="form-control" type="number" name="tamanno" value="0" step="0.1" required id="id_tamanno"><span class="input-group-text">cm</span></div>
+                </td>
+                
+            </tr>
+        </table>
+    </div>
+
+        </form>
+        
+
+    </div>
+    <div class="col-4">
+        <div>
+            <Button id="addToCatalog" class="btn btn-outline-success mt-2 rounded-pill">
+            + Añadir al Catalogo
+            </Button></div>
+        <div id="preview"></div>
+        
+</div>
+</div>
+
+<div id="successModal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <p>Factura guardada con éxito.</p>
+        <div class="d-grid gap-2 d-md-flex justify-content-md">
+        <a href="{% url 'createcatalogo' %}" class="btn btn-outline-success btn-sm me-md-2 rounded-pill" id="newInvoiceBtn">Añadir nuevo producto</a>
+        <a href="{% url 'productos' %}" class="btn btn-outline-success btn-sm me-md-2 rounded-pill" id="viewProductsBtn">Revisar Catalogo</a>
+    </div>
+    </div>
+</div>
+
+<style>
+    /* Estilos básicos para el modal */
+    .modal {
+        display: none; 
+        position: fixed; 
+        z-index: 1; 
+        left: 0;
+        top: 0;
+        width: 100%; 
+        height: 100%; 
+        overflow: auto; 
+        background-color: rgb(0,0,0); 
+        background-color: rgba(0,0,0,0.4); 
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto; 
+        padding: 20px;
+        border: 1px solid #888;
+        width: 40%; 
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+</style>
+<script src="{% static 'preview.js' %}"></script>
+{% endblock %}

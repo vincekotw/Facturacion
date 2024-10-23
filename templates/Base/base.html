@@ -1,0 +1,69 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Cajita de Cascabeles</title>
+    <link rel="icon" href="{% static 'logo.png' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'node_modules/bootstrap/dist/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'serch.css' %}">
+    
+</head>
+<body>
+  <!--NavBar-->
+        <div class="container-fluid">
+          <div class="row">
+            <nav class="navbar navbar-expand-lg bg-body-tertiary">
+          <div class="nav-btn nav-item justify-content-start">
+            <button class="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">
+              <img src="{% static '/menu-nav.png' %}" alt="menu" width="30">
+            </button>
+            
+          </div>        
+                <ul class="nav nav-tabs col justify-content-end">
+                  
+                  <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Inicio</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'catalogo' %}active{% endif %}" href="{% url 'catalogo' %}">Catalogo</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'clientes' %}active{% endif %}" href="{% url 'clientes' %}">Clientes</a>
+                  </li>
+                </ul>
+            </nav>
+              </div> 
+                    
+        </div>
+
+    <!--Aside Admin Panel-->
+    
+      
+      <div class="container-fluid ">
+        <div class="offcanvas offcanvas-start bg-gradient" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Menu</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">      
+        <div>
+                  <ul class="justify-content-start container-fluid">
+                      <a class="btn btn-lg" href="{% url 'home' %}">{% if request.resolver_match.url_name == 'home' %}<img src="{% static 'icons-flecha.png' %}" width="25" alt="->">{% endif %} Inicio</a><br>
+                      <a class="btn btn-lg mt-2" href="{% url 'productos' %}"> {% if request.resolver_match.url_name == 'productos' %}<img src="{% static 'icons-flecha.png' %}" width="25" alt="->">{% endif %} Productos</a><br>
+                      <a class="btn btn-lg mt-2 " href="{% url 'clientes' %}">{% if request.resolver_match.url_name == 'clientes' %}<img src="{% static 'icons-flecha.png' %}" width="25" alt="->">{% endif %} Clientes</a><br>
+                      <a class="btn btn-lg mt-2 " href="{% url 'createcatalogo' %}">{% if request.resolver_match.url_name == 'createcatalogo' %}<img src="{% static 'icons-flecha.png' %}" width="25" alt="->">{% endif %} Añadir Stock</a>
+                  </ul>
+        </div>
+        </div>
+        </div>
+        <div class="row">
+    {% block content %}
+    {% endblock %}
+    
+  </div>
+</div>
+    <script src="{% static 'node_modules/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

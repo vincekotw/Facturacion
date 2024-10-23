@@ -1,0 +1,46 @@
+{% extends 'Base/base.html' %}
+{% load static %}
+{% block content %}
+<div class="col-lg-9 justify-content-center border-end">
+    <div class="container row">
+    {% for producto in productos %}
+    <div class="col-md-4 mb-3">
+    <div class="card d-grid">
+        <img src="{{producto.imagen}}" class="card-img-top img-fluid" alt="{{producto.nombre}}" height="200" width="200">
+      
+        <div class="card-body">
+          <h5 class="card-title">{{producto.nombre}}</h5>
+          <p class="card-text"><b>Precio:</b>{{producto.precio}} {{producto.moneda}}<br><small><b>Tamaño:</b> {{producto.tamanno}}cm</small></p>
+          <a href="http://api.whatsapp.com/send?phone=5359806171&text=👋 Hola%2C Deseo comprar el siguiente producto%3A {{producto.nombre}}" class="btn btn-success">Ir a Comprar</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+</div>
+</div>
+
+
+<div class="col-sm-3 justify-content-end">
+    <div>
+      <h3>Ultimas Publicaciones</h3>
+      
+      <ul>
+        {% for producto in productos|slice:":5" %}
+        <li>
+          {{producto.nombre}}, Precio: {{producto.precio}} {{producto.moneda}}
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div>
+    <div class="img justify-content-center">
+      <img src="{% static 'logo.png' %}" alt="logo" width="100%">
+    </div>
+      <div class="text">
+        <p>
+          Tienda de articulos anime-gamer por encargos
+        </p>
+      </div>
+    </div>
+</div>
+{% endblock %}

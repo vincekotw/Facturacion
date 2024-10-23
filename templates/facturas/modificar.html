@@ -1,0 +1,143 @@
+
+{% extends 'Base/base.html' %}
+{% load static %}
+{% block content %}
+<div class="d-grid gap-4 col-9 mx-auto">
+    <form id="eliminar-form" action="{% url 'modificar' producto.pk %}" method="post" style="display:inline;">
+        {% csrf_token %}
+        <div>
+        <input type="hidden" name="eliminar" value="true">
+        <button type="button" class="btn btn-danger mt-2 me-2 float-end" onclick="confirmarEliminacion()"><b><img src="{% static 'E262_color.png' %}" alt="25" height="25"></b>Eliminar</button></form>
+    <form id="aclualizar-form" action="{% url 'modificar' producto.pk %}"  method="post" style="display:inline;">
+    
+        <a class="btn btn-close btn-lg" data-bs-toggle="button" href="{% url 'productos' %}"></a>
+        <input type="hidden" name="actualizar" value="true">
+        <button class="btn btn-outline-warning mt-2 me-2 float-end" type="submit" onclick="confirmarActualizacion()"><b><img src="{% static '1F504.svg' %}" alt="20" height="20" ></b> Actualizar</button>
+        
+        </div>
+        
+    {% csrf_token %}
+    <br>
+    <h3>Producto encargado el: {{producto.fecha_formateada}} por {% if producto.factura.nombre != 'Cliente' %}{{producto.factura.nombre}}{% else %}{{producto.factura.numero_wsp}}{% endif %} </h3>
+    <table class="table">
+        <tr><td class="col-2">
+            <b>Cantidad: </b>
+        </td><td colspan="2">
+            <b>Producto:</b>
+        </td><td class="col-3">
+            <b>Precio:</b>
+        </td></tr>
+        <tr><td>
+            <input class="form-control" type="number" name="cantidad" value="{{producto.cantidad}}" required id="id_cantidad">
+        </td><td class="col-3">
+            <input class="form-control" type="text" name="nombre_producto" value="{{producto.nombre_producto}}" maxlength="200" required id="id_nombre_producto">
+        </td><td>
+            <input class="form-control type="text" name="enlace_temu" value="{{producto.enlace_temu}}" maxlength="300" required id="id_enlace_temu">
+        </td><td>
+            <div class="input-group mb-3">
+                <span class="input-group-text">$</span>
+                <input class="form-control" type="number" name="precio" value="{{producto.precio}}" step="0.01" required id="id_precio">
+                <span class="input-group-text">USD</span>
+            </div>
+        </td></tr>
+        <tr><td>
+            <b>Peso:</b>
+        </td><td colspan="2">
+            <b>Cambio:</b>
+            
+        </td><td>
+            <b>Total:</b>
+        </td></tr>
+        <tr><td>
+            <div class="input-group mb-3">
+                <input class="form-control" type="number" name="peso" value="{{producto.peso}}" step="0.01" required id="id_peso">
+            <span class="input-group-text">lb</span>
+            </div>
+        </td><td>
+            <div class="input-group mb-3">
+                <span class="input-group-text">$</span>
+                <input class="form-control" type="number" name="cambio_cup" value="{{producto.cambio_cup}}" step="0.01" required id="id_cambio_cup">
+                <span class="input-group-text">CUP</span>
+            </div>
+        </td><td>
+            <div class="input-group mb-3">
+                <span class="input-group-text">$</span>
+                <input class="form-control" type="number" name="cambio_mlc" value="{{producto.cambio_mlc}}" step="0.01" required id="id_cambio_mlc">
+                <span class="input-group-text">MLC</span>
+            </div>
+        </td><td>
+            <b>${{producto.total}} USD</b>
+                {% if producto.cambio_cup != 0 %} <small class="float-end">${{producto.total_cup}} CUP</small>{% endif %}
+                {% if producto.cambio_mlc != 0 %}<br> <small class="float-end">${{producto.total_mlc}} MLC</small>{% endif %}
+        </td></tr>
+        
+        <tr><td>
+            <b>Metodo de Pago:</b>
+        </td><td>
+            <select class="form-select" name="tipo_pago" required id="id_tipo_pago" onchange="toggleNotaField()">
+                <option value="{{producto.tipo_pago}}">{{producto.tipo_pago}}</option>
+                <option value="Pago Completo Inicial">Pago Completo Inicial</option>
+                <option value="Mitad/Mitad">Mitad/Mitad</option>
+                <option value="Pago Completo Final">Pago Completo Final</option>
+                <option value="Otro">Otro</option>
+        </td>
+            <td>
+                <b class="float-end">📱Numero de contacto:</b>
+            </td><td class="col-2">
+                <select class="form-select" name="factura" required id="id_factura">
+                    <option value="{{producto.factura}}">{{producto.factura}}</option>
+                    {% for cliente in factura %}
+                    {% if cliente.numero_wsp != producto.factura.numero_wsp %}
+                    <option value="{{cliente.numero_wsp}}">{{cliente.numero_wsp}}</option>
+                    {% endif %}
+                    {% endfor %}
+            </td>
+    
+    </tr>
+    <tr><td>
+        <b>Estado:</b>
+    </td><td>
+        {{modificar.encargado}} <b>Encargado</b> 
+    </td><td>
+        {{modificar.recibido}} <b>Recibido</b> 
+    </td><td>
+        {{modificar.entregado}} <b>Entregado</b>
+    </td></tr>
+    {% if producto.tipo_pago == 'otro' %}
+    <tr>
+        <th>Nota:</th>
+        <td colspan="4"><textarea class="form-control" name="nota" id="id_nota" {% if producto.nota == "" %}placeholder="Especificar tipo de pago realizado o algun otro comentario si lo desea"{% endif %}>{{producto.nota}}</textarea> </td>
+    </tr>
+    {% endif %}
+    </table>
+    <input type="hidden" name="id" id="" value="{{product.pk}}" readonly>
+</form>
+<hr>
+{% if anterior == 0 %}
+{% if siguiente %}
+<div>
+    <a class="btn btn-success mt-2 float-end" href="{% url 'modificar' siguiente %}">Siguiente <span aria-hidden="true">&raquo;</span></a>
+</div>
+{% endif %}
+{% else %}
+<div>
+    <a class="btn btn-success mt-2" href="{% url 'modificar' anterior %}"><span aria-hidden="true">&laquo;</span> Anterior</a>
+    {% if siguiente %}
+    <a class="btn btn-success mt-2 float-end" href="{% url 'modificar' siguiente %}">Siguiente <span aria-hidden="true">&raquo;</span></a>
+    {% endif %}
+</div>
+{% endif %}
+</div>
+<script>
+    function confirmarEliminacion() {
+        if (confirm("¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer.")) {
+            document.getElementById('eliminar-form').submit();
+        }
+    }
+    function confirmarActualizacion() {
+        if (confirm("¿Estás seguro de que deseas modificar este producto?")) {
+            document.getElementById('actualizar-form').submit();
+        }
+    }
+    </script>
+{% endblock %}

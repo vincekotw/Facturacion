@@ -1,0 +1,177 @@
+{% extends 'Base/base.html' %}
+{% load static %}
+{% block content %}
+<div class="col">
+<div>
+<h1>Crear Factura <a href="{% url 'productos' %}" class="btn btn-warning mt-2 me-2 float-end">Salir</a></h1>
+</div>
+<div class="container-fluid mt-3">
+    <div class="row">
+    <div class="d-grid gap-4 col-md-8 border-end">
+    
+    
+    <div>
+<h2>Agregar Producto</h2>
+
+    <form id="producto-form" method="post">
+        {% csrf_token %}
+        <Button class="btn btn-outline-success mt-2 rounded-pill float-end" type="submit">
+        + Añadir Producto
+        </Button>
+<table class="table">
+    <tr>
+        <th>Producto</th>
+        <th>Enlace</th>
+        <th class="col-1">Cantidad</th>
+        
+    </tr>
+    <tr>
+            <td class="col-4"><input class="form-control" type="text" name="nombre_producto" maxlength="200" required id="id_nombre_producto" placeholder="Nombre del Producto"></td>
+            <td class="col-4"><input class="form-control" type="text" name="enlace_temu" maxlength="300" required id="id_enlace_temu" placeholder="Enlace de tienda"></td>
+            <td class="col-2"><input class="form-control" type="number" name="cantidad" value="1" required id="id_cantidad"></td>        
+    </tr><tr>
+        <th>Precio</th>
+        <th>Peso</th>
+        <th>Tipo de Pago</th>
+    </tr><tr>
+        <td class="col-3">
+            <div class="input-group mb-3">
+                <span class="input-group-text">$</span>
+                <input class="form-control" type="number" name="precio" value="0" step="0.01" required id="id_precio">
+                <span class="input-group-text">USD</span>
+            </div>
+        </td><td class="col-3">
+            <div class="input-group mb-3">
+                <input class="form-control" type="number" name="peso" value="0" step="0.01" required id="id_peso">
+            <span class="input-group-text">lb</span>
+            </div>
+        </td>
+        <td><select class="form-select" name="tipo_pago" required id="id_tipo_pago" onchange="toggleNotaField()">
+            <option value="">---------</option>
+            <option value="Pago Completo Inicial">Pago Completo Inicial</option>
+            <option value="Mitad/Mitad" selected>Mitad/Mitad</option>
+            <option value="Pago Completo Final">Pago Completo Final</option>
+            <option value="Otro">Otro</option>
+        </td>
+    </tr>
+    <tr>
+        <th><h3>Cambio:</h3></th>
+        <td class="col-3">
+            
+            <div class="form-check">
+            <input class="form-check-input" type="radio" name="cambio_radio" id="id_radio_1" value="CUP">
+            <div class="input-group col-2">
+            <span class="input-group-text">$</span>
+            <input class="form-control" type="number" name="cambio_cup" value="0" step="0.01" id="id_cambio_cup"><span class="input-group-text">CUP</span></div></div>
+        </td>
+        <td class="col-3">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="cambio_radio" id="id_radio_2" value="MLC">
+                <div class="input-group col-2">
+                <span class="input-group-text">$</span>
+            <input class="form-control" type="number" name="cambio_mlc" value="0" step="0.01" id="id_cambio_mlc"><span class="input-group-text">MLC</span></div></div>
+        </td>
+        
+    </tr>
+    </table>
+    <div id="nota_container" style="display:none;">
+        <tr>
+            
+            <th> <h3>Nota:</h3></th>
+            <td colspan="2" class="col-3">
+                
+                <textarea class="form-control" name="nota" id="id_nota" placeholder="Especificar tipo de pago realizado"></textarea>
+            </td>
+        </tr>
+    </div>
+</form>
+</div>
+</div>
+            <div class="col-md-4">
+                <div class="container-fluid">
+                <h2>Factura: <button id="guardar_factura" class="btn btn-success float-end">Guardar Factura</button></h2>
+                
+                </div>
+                <div id="telefono_container" style="display:none;">
+                    <div class="input-group mb-3 mt-3">
+                        <span class="input-group-text" id="basic-addon1">+53 </span>
+                        <input class="form-control" type="text" id="numero_wsp" placeholder="Número de WhatsApp" required>
+                    </div>
+                </div>
+                
+            <hr>
+            <div id="factura"></div>
+        </div>
+            </div>
+
+</div>
+</div>
+
+
+<!-- Modal para opciones después de guardar la factura -->
+<div id="successModal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <p>Factura guardada con éxito.</p>
+        <div class="d-grid gap-2 d-md-flex justify-content-md">
+        <a href="{% url 'facturas' %}" class="btn btn-outline-success btn-sm me-md-2 rounded-pill" id="newInvoiceBtn">Crear nueva factura</a>
+        <a href="{% url 'productos' %}" class="btn btn-outline-success btn-sm me-md-2 rounded-pill" id="viewProductsBtn">Regresar a productos</a>
+        <a href="{% url 'clientes' %}" class="btn btn-outline-success btn-sm me-md-2 rounded-pill" id="viewProductsBtn">Revisar clientes</a>
+    </div>
+    </div>
+</div>
+
+<style>
+    /* Estilos básicos para el modal */
+    .modal {
+        display: none; 
+        position: fixed; 
+        z-index: 1; 
+        left: 0;
+        top: 0;
+        width: 100%; 
+        height: 100%; 
+        overflow: auto; 
+        background-color: rgb(0,0,0); 
+        background-color: rgba(0,0,0,0.4); 
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto; 
+        padding: 20px;
+        border: 1px solid #888;
+        width: 40%; 
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+</style>
+
+<script>
+    function toggleNotaField() {
+    const tipoPagoSelect = document.getElementById("id_tipo_pago");
+    const notaContainer = document.getElementById("nota_container");
+
+    if (tipoPagoSelect.value === "Otro") {
+        notaContainer.style.display = "block";
+    } else {
+        notaContainer.style.display = "none";
+    }
+}
+</script>
+<script src="{% static 'factura.js' %}"></script>
+
+
+{% endblock %}
